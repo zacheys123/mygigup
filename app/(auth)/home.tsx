@@ -12,7 +12,7 @@ export default function WelcomeScreen() {
   const styles = createWelcomeStyles(colors);
   // Redirect to tabs if user is signed in
   if (isLoaded && user) {
-    return <Redirect href="/(dashboard)" />;
+    return <Redirect href="/(dashboard)/home" />;
   }
 
   // Show loading state while checking auth

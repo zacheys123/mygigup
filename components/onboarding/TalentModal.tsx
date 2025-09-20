@@ -25,7 +25,7 @@ const TalentModal: React.FC<TalentModalProps> = ({
   onClose,
   onTalentSelect,
 }) => {
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
 
   const talentOptions: {
     value: TalentType;
@@ -71,7 +71,16 @@ const TalentModal: React.FC<TalentModalProps> = ({
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.modalOverlay}>
+        <View
+          style={[
+            styles.modalOverlay,
+            {
+              backgroundColor: isDarkMode
+                ? "rgba(0,0,0,0.8)"
+                : "rgba(0,0,0,0.6)",
+            },
+          ]}
+        >
           <TouchableWithoutFeedback>
             <Animated.View
               entering={FadeIn.duration(300)}
@@ -81,12 +90,19 @@ const TalentModal: React.FC<TalentModalProps> = ({
                 <Text style={[styles.modalTitle, { color: colors.text }]}>
                   Select Your Talent
                 </Text>
-                <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                  <Ionicons name="close" size={24} color={colors.text} />
+                <TouchableOpacity
+                  onPress={onClose}
+                  style={[
+                    styles.closeButton,
+                    { backgroundColor: colors.backgrounds.card },
+                  ]}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="close" size={20} color={colors.text} />
                 </TouchableOpacity>
               </View>
 
-              <Text style={[styles.modalSubtitle, { color: colors.textMuted }]}>
+              <Text style={[styles.modalSubtitle, { color: colors.text }]}>
                 What's your primary musical talent?
               </Text>
 
@@ -103,34 +119,35 @@ const TalentModal: React.FC<TalentModalProps> = ({
                       style={[
                         styles.optionButton,
                         {
-                          backgroundColor: colors.text,
-                          borderColor: colors.border,
+                          backgroundColor: colors.backgrounds.card,
+                          borderLeftWidth: 4,
+                          borderLeftColor: colors.primary,
                         },
                       ]}
                       onPress={() => handleSelect(option.value)}
+                      activeOpacity={0.8}
                     >
                       <View style={styles.optionContent}>
                         <View
                           style={[
                             styles.optionIcon,
                             {
-                              backgroundColor: colors.primary + "20",
+                              backgroundColor: colors.primary + "15",
                             },
                           ]}
                         >
                           <Ionicons
                             name={option.icon as any}
-                            size={24}
+                            size={22}
                             color={colors.primary}
                           />
                         </View>
                         <View style={styles.optionTextContainer}>
                           <Text
                             style={[
-                              styles.optionText,
+                              styles.optionLabel,
                               {
                                 color: colors.text,
-                                fontWeight: "600",
                               },
                             ]}
                           >
@@ -140,7 +157,7 @@ const TalentModal: React.FC<TalentModalProps> = ({
                             style={[
                               styles.optionDescription,
                               {
-                                color: colors.textMuted,
+                                color: colors.text,
                               },
                             ]}
                           >
@@ -151,8 +168,8 @@ const TalentModal: React.FC<TalentModalProps> = ({
 
                       <Ionicons
                         name="chevron-forward"
-                        size={20}
-                        color={colors.textMuted}
+                        size={18}
+                        color={colors.text}
                       />
                     </TouchableOpacity>
                   </Animated.View>
@@ -171,41 +188,45 @@ const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
   modalContent: {
     width: width - 40,
+    maxWidth: 400,
     maxHeight: "80%",
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 16,
+    padding: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
     elevation: 5,
   },
   modalHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 8,
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: "700",
   },
   closeButton: {
-    padding: 4,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalSubtitle: {
     fontSize: 14,
-    marginBottom: 20,
+    marginBottom: 24,
   },
   optionsContainer: {
-    marginBottom: 20,
+    marginBottom: 8,
   },
   optionButton: {
     flexDirection: "row",
@@ -213,7 +234,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 16,
     borderRadius: 12,
-    borderWidth: 1,
     marginBottom: 12,
   },
   optionContent: {
@@ -222,9 +242,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   optionIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 46,
+    height: 46,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 16,
@@ -232,12 +252,14 @@ const styles = StyleSheet.create({
   optionTextContainer: {
     flex: 1,
   },
-  optionText: {
+  optionLabel: {
     fontSize: 16,
+    fontWeight: "600",
     marginBottom: 4,
   },
   optionDescription: {
-    fontSize: 14,
+    fontSize: 13,
+    lineHeight: 18,
   },
 });
 

@@ -66,7 +66,7 @@ const OnBoarding = () => {
               >
                 <Ionicons name="mic" size={40} color="white" />
               </Animated.View>
-              <Text style={[styles.title, { color: colors.text }]}>
+              <Text style={[styles.title, { color: colors.success }]}>
                 Welcome to Gigup!
               </Text>
               <Text style={[styles.subtitle, { color: colors.textMuted }]}>

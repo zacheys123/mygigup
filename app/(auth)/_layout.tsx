@@ -7,7 +7,7 @@ export default function AuthLayout() {
   const { colors } = useTheme();
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShown: false }}>
       <StatusBar barStyle={colors.statusBarStyle} />
       <Stack.Screen
         name="sign-in"

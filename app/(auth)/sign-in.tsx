@@ -66,7 +66,7 @@ export default function SignInPage() {
         {/* Header */}
         <View style={styles.header}>
           <Ionicons name="musical-notes" size={48} color="white" />
-          <Text style={styles.title}>GigHub</Text>
+          <Text style={styles.title}>GigUp</Text>
           <Text style={styles.subtitle}>Welcome back</Text>
         </View>
 

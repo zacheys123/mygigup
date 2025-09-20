@@ -1,7 +1,6 @@
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
-
 import { ThemeProvider } from "@/hooks/useTheme";
 import {
   Redirect,
@@ -9,7 +8,7 @@ import {
   useRootNavigationState,
   useSegments,
 } from "expo-router";
-import { ActivityIndicator, StatusBar, View } from "react-native";
+import { ActivityIndicator, StatusBar, View, SafeAreaView } from "react-native";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
@@ -25,7 +24,9 @@ export default function RootLayout() {
     >
       <ConvexProvider client={convex}>
         <ThemeProvider>
-          <RootLayoutNav />
+          <SafeAreaView style={{ flex: 1 }}>
+            <RootLayoutNav />
+          </SafeAreaView>
         </ThemeProvider>
       </ConvexProvider>
     </ClerkProvider>
@@ -37,7 +38,6 @@ function RootLayoutNav() {
   const segments = useSegments();
   const rootNavigationState = useRootNavigationState();
 
-  // Show loading indicator while auth is loading or navigation isn't ready
   if (!isLoaded || !rootNavigationState?.key) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -46,32 +46,22 @@ function RootLayoutNav() {
     );
   }
 
-  // Check if we're inside the auth group
   const inAuthGroup = segments[0] === "(auth)";
-
-  // Get the current route within auth group
   const currentAuthRoute = segments[1];
-
-  // Define which auth routes are allowed when signed in (for post-signup flows)
   const allowedSignedInAuthRoutes = ["onBoarding"];
   const isAllowedAuthRoute =
     currentAuthRoute && allowedSignedInAuthRoutes.includes(currentAuthRoute);
 
-  // Redirect logic - FIXED: Redirect to specific screens, not layout groups
   if (isSignedIn) {
     if (inAuthGroup && !isAllowedAuthRoute) {
-      // User signed in but trying to access auth pages that aren't allowed
-      return <Redirect href="/(tabs)" />;
+      return <Redirect href="/(dashboard)/home" />;
     }
   } else {
     if (!inAuthGroup) {
-      // User not signed in and not trying to access auth pages
-      return <Redirect href="/(auth)/sign-in" />; // Redirect to specific screen
+      return <Redirect href="/(auth)/home" />;
     }
   }
 
-  // Render the stack without any Screen components
-  // Expo Router will automatically discover routes from file system
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <StatusBar />

@@ -8,10 +8,16 @@ import {
   ScrollView,
   ActivityIndicator,
   Dimensions,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import Animated, { FadeIn, ZoomIn } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+  ZoomIn,
+} from "react-native-reanimated";
 import { useTheme } from "@/hooks/useTheme";
 
 interface OnBoardingComponentProps {
@@ -25,15 +31,24 @@ const OnBoardingComponent: React.FC<OnBoardingComponentProps> = ({
   checkingOnboarding,
   handleStartOnboarding,
 }) => {
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
 
   if (checkingOnboarding) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={[styles.loadingText, { color: colors.text }]}>
-          Checking your profile...
-        </Text>
+      <View
+        style={[
+          styles.loadingContainer,
+          { backgroundColor: colors.backgrounds.input },
+        ]}
+      >
+        <Animated.View entering={ZoomIn.duration(600)}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text
+            style={[styles.loadingText, { color: colors.text, marginTop: 16 }]}
+          >
+            Preparing your experience...
+          </Text>
+        </Animated.View>
       </View>
     );
   }
@@ -45,126 +60,158 @@ const OnBoardingComponent: React.FC<OnBoardingComponentProps> = ({
       animationType="fade"
       statusBarTranslucent
     >
-      <View style={styles.modalContainer}>
-        <LinearGradient
-          colors={["#1a1a2e", "#16213e", "#0f3460"]}
-          style={styles.gradient}
+      <View
+        style={[
+          styles.modalContainer,
+          {
+            backgroundColor: isDarkMode ? "rgba(0,0,0,0.9)" : "rgba(0,0,0,0.7)",
+          },
+        ]}
+      >
+        <View
+          style={[
+            styles.contentContainer,
+            { backgroundColor: colors.backgrounds.input },
+          ]}
         >
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Header Section */}
             <Animated.View
-              entering={FadeIn.duration(800)}
+              entering={FadeInDown.duration(800)}
               style={styles.header}
             >
               <Animated.View
                 entering={ZoomIn.duration(600)}
                 style={[
                   styles.logoContainer,
-                  { backgroundColor: colors.primary },
+                  {
+                    backgroundColor: colors.primary,
+                  },
                 ]}
               >
-                <Ionicons name="mic" size={40} color="white" />
+                <Ionicons name="mic" size={32} color="white" />
               </Animated.View>
               <Text style={[styles.title, { color: colors.text }]}>
-                Welcome to GigUp!
+                Welcome to <Text style={{ color: colors.primary }}>GigUp</Text>
               </Text>
-              <Text style={[styles.subtitle, { color: colors.textMuted }]}>
-                Let's get you set up with the ultimate music platform
+              <Text style={[styles.subtitle, { color: colors.text }]}>
+                Connect musicians with event planners seamlessly
               </Text>
             </Animated.View>
 
+            {/* Features Grid */}
             <View style={styles.featuresContainer}>
               <Animated.View
                 entering={FadeIn.duration(800).delay(200)}
-                style={styles.featureCard}
+                style={[
+                  styles.featureCard,
+                  {
+                    backgroundColor: colors.backgrounds.card,
+                    borderLeftWidth: 4,
+                    borderLeftColor: colors.primary,
+                  },
+                ]}
               >
                 <View
                   style={[
                     styles.featureIcon,
-                    { backgroundColor: colors.primary + "20" },
+                    { backgroundColor: colors.primary + "15" },
                   ]}
                 >
                   <Ionicons name="mic" size={24} color={colors.primary} />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={[styles.featureTitle, { color: colors.text }]}>
-                    For Musicians & Talent
+                    For Musicians
                   </Text>
                   <Text
-                    style={[
-                      styles.featureDescription,
-                      { color: colors.textMuted },
-                    ]}
+                    style={[styles.featureDescription, { color: colors.text }]}
                   >
-                    Showcase your skills, find gigs, connect with clients, and
-                    build your professional portfolio
+                    Showcase talent, find gigs, build portfolio
                   </Text>
                 </View>
               </Animated.View>
 
               <Animated.View
-                entering={FadeIn.duration(800).delay(400)}
-                style={styles.featureCard}
+                entering={FadeIn.duration(800).delay(300)}
+                style={[
+                  styles.featureCard,
+                  {
+                    backgroundColor: colors.backgrounds.card,
+                    borderLeftWidth: 4,
+                    borderLeftColor: "#3b82f6",
+                  },
+                ]}
               >
                 <View
                   style={[
                     styles.featureIcon,
-                    { backgroundColor: "#3b82f6" + "20" },
+                    { backgroundColor: "#3b82f6" + "15" },
                   ]}
                 >
                   <Ionicons name="business" size={24} color="#3b82f6" />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={[styles.featureTitle, { color: colors.text }]}>
-                    For Event Clients
+                    For Event Planners
                   </Text>
                   <Text
-                    style={[
-                      styles.featureDescription,
-                      { color: colors.textMuted },
-                    ]}
+                    style={[styles.featureDescription, { color: colors.text }]}
                   >
-                    Discover amazing talent, book performers, manage events, and
-                    create unforgettable experiences
+                    Discover talent, create memorable events
                   </Text>
                 </View>
               </Animated.View>
 
               <Animated.View
-                entering={FadeIn.duration(800).delay(600)}
-                style={styles.featureCard}
+                entering={FadeIn.duration(800).delay(400)}
+                style={[
+                  styles.featureCard,
+                  {
+                    backgroundColor: colors.backgrounds.card,
+                    borderLeftWidth: 4,
+                    borderLeftColor: "#8b5cf6",
+                  },
+                ]}
               >
                 <View
                   style={[
                     styles.featureIcon,
-                    { backgroundColor: "#8b5cf6" + "20" },
+                    { backgroundColor: "#8b5cf6" + "15" },
                   ]}
                 >
                   <Ionicons name="people" size={24} color="#8b5cf6" />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={[styles.featureTitle, { color: colors.text }]}>
-                    Dual Role Flexibility
+                    Dual Roles
                   </Text>
                   <Text
-                    style={[
-                      styles.featureDescription,
-                      { color: colors.textMuted },
-                    ]}
+                    style={[styles.featureDescription, { color: colors.text }]}
                   >
-                    Be both a performer and a booker - perfect for industry
-                    professionals
+                    Be both performer and booker
                   </Text>
                 </View>
               </Animated.View>
 
               <Animated.View
-                entering={FadeIn.duration(800).delay(800)}
-                style={styles.featureCard}
+                entering={FadeIn.duration(800).delay(500)}
+                style={[
+                  styles.featureCard,
+                  {
+                    backgroundColor: colors.backgrounds.card,
+                    borderLeftWidth: 4,
+                    borderLeftColor: "#10b981",
+                  },
+                ]}
               >
                 <View
                   style={[
                     styles.featureIcon,
-                    { backgroundColor: "#10b981" + "20" },
+                    { backgroundColor: "#10b981" + "15" },
                   ]}
                 >
                   <Ionicons name="calendar" size={24} color="#10b981" />
@@ -174,83 +221,101 @@ const OnBoardingComponent: React.FC<OnBoardingComponentProps> = ({
                     Seamless Booking
                   </Text>
                   <Text
-                    style={[
-                      styles.featureDescription,
-                      { color: colors.textMuted },
-                    ]}
+                    style={[styles.featureDescription, { color: colors.text }]}
                   >
-                    Easy scheduling, secure payments, and professional
-                    communication tools
+                    Easy scheduling and secure payments
                   </Text>
                 </View>
               </Animated.View>
             </View>
 
-            <View style={styles.benefitsSection}>
+            {/* Benefits Section */}
+            <Animated.View
+              entering={FadeIn.duration(800).delay(600)}
+              style={styles.benefitsSection}
+            >
               <Text style={[styles.benefitsTitle, { color: colors.text }]}>
-                Why Choose GigUp?
+                Key Features
               </Text>
-              <View style={styles.benefitsList}>
+              <View style={styles.benefitsGrid}>
                 <View style={styles.benefitItem}>
-                  <Ionicons name="checkmark-circle" size={20} color="#10b981" />
-                  <Text
-                    style={[styles.benefitText, { color: colors.textMuted }]}
+                  <View
+                    style={[
+                      styles.benefitIcon,
+                      { backgroundColor: colors.primary + "15" },
+                    ]}
                   >
-                    Verified artists and clients
+                    <Ionicons
+                      name="shield-checkmark"
+                      size={18}
+                      color={colors.primary}
+                    />
+                  </View>
+                  <Text style={[styles.benefitText, { color: colors.text }]}>
+                    Verified Community
                   </Text>
                 </View>
                 <View style={styles.benefitItem}>
-                  <Ionicons name="checkmark-circle" size={20} color="#10b981" />
-                  <Text
-                    style={[styles.benefitText, { color: colors.textMuted }]}
+                  <View
+                    style={[
+                      styles.benefitIcon,
+                      { backgroundColor: "#3b82f6" + "15" },
+                    ]}
                   >
-                    Secure payment system
+                    <Ionicons name="lock-closed" size={18} color="#3b82f6" />
+                  </View>
+                  <Text style={[styles.benefitText, { color: colors.text }]}>
+                    Secure Payments
                   </Text>
                 </View>
                 <View style={styles.benefitItem}>
-                  <Ionicons name="checkmark-circle" size={20} color="#10b981" />
-                  <Text
-                    style={[styles.benefitText, { color: colors.textMuted }]}
+                  <View
+                    style={[
+                      styles.benefitIcon,
+                      { backgroundColor: "#8b5cf6" + "15" },
+                    ]}
                   >
-                    Real-time messaging
+                    <Ionicons name="chatbubbles" size={18} color="#8b5cf6" />
+                  </View>
+                  <Text style={[styles.benefitText, { color: colors.text }]}>
+                    Real-time Chat
                   </Text>
                 </View>
                 <View style={styles.benefitItem}>
-                  <Ionicons name="checkmark-circle" size={20} color="#10b981" />
-                  <Text
-                    style={[styles.benefitText, { color: colors.textMuted }]}
+                  <View
+                    style={[
+                      styles.benefitIcon,
+                      { backgroundColor: "#10b981" + "15" },
+                    ]}
                   >
-                    Portfolio showcasing
-                  </Text>
-                </View>
-                <View style={styles.benefitItem}>
-                  <Ionicons name="checkmark-circle" size={20} color="#10b981" />
-                  <Text
-                    style={[styles.benefitText, { color: colors.textMuted }]}
-                  >
-                    Event management tools
+                    <Ionicons name="briefcase" size={18} color="#10b981" />
+                  </View>
+                  <Text style={[styles.benefitText, { color: colors.text }]}>
+                    Portfolio Showcase
                   </Text>
                 </View>
               </View>
-            </View>
+            </Animated.View>
 
+            {/* CTA Section */}
             <Animated.View
-              entering={FadeIn.duration(800).delay(1000)}
+              entering={FadeInUp.duration(800).delay(800)}
               style={styles.ctaContainer}
             >
-              <Text style={[styles.ctaText, { color: colors.textMuted }]}>
-                Ready to join the community?
-              </Text>
               <TouchableOpacity
                 style={[styles.ctaButton, { backgroundColor: colors.primary }]}
                 onPress={handleStartOnboarding}
+                activeOpacity={0.9}
               >
-                <Text style={styles.ctaButtonText}>Complete Signup</Text>
+                <Text style={styles.ctaButtonText}>Get Started</Text>
                 <Ionicons name="arrow-forward" size={20} color="white" />
               </TouchableOpacity>
+              <Text style={[styles.ctaSubtext, { color: colors.text }]}>
+                Join our community of music professionals
+              </Text>
             </Animated.View>
           </ScrollView>
-        </LinearGradient>
+        </View>
       </View>
     </Modal>
   );
@@ -263,69 +328,75 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1a1a2e",
   },
   loadingText: {
-    marginTop: 16,
     fontSize: 16,
+    fontWeight: "500",
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-  },
-  gradient: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 24,
-    paddingTop: 60,
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 40,
-  },
-  logoContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
+  },
+  contentContainer: {
+    width: "90%",
+    maxWidth: 400,
+    borderRadius: 16,
+    maxHeight: "90%",
+    overflow: "hidden",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
     shadowOpacity: 0.3,
     shadowRadius: 4.65,
     elevation: 8,
   },
+  scrollContent: {
+    padding: 24,
+    paddingTop: 32,
+    paddingBottom: 32,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 32,
+  },
+  logoContainer: {
+    width: 70,
+    height: 70,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16,
+  },
   title: {
-    fontSize: 32,
-    fontWeight: "bold",
+    fontSize: 26,
+    fontWeight: "700",
     textAlign: "center",
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     textAlign: "center",
-    marginBottom: 10,
     lineHeight: 22,
+    fontWeight: "400",
   },
   featuresContainer: {
-    gap: 20,
+    gap: 12,
     marginBottom: 32,
   },
   featureCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    padding: 20,
-    borderRadius: 16,
+    padding: 16,
+    borderRadius: 12,
     gap: 16,
   },
   featureIcon: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -333,43 +404,52 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   featureTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
     marginBottom: 4,
   },
   featureDescription: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 18,
   },
   benefitsSection: {
     marginBottom: 32,
   },
   benefitsTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontWeight: "600",
     marginBottom: 16,
     textAlign: "center",
   },
-  benefitsList: {
+  benefitsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     gap: 12,
   },
   benefitItem: {
+    width: (width - 100) / 2,
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: "rgba(0,0,0,0.03)",
+  },
+  benefitIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8,
   },
   benefitText: {
-    fontSize: 14,
+    fontSize: 13,
+    fontWeight: "500",
     flex: 1,
   },
   ctaContainer: {
     alignItems: "center",
-    marginTop: 20,
-  },
-  ctaText: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: "center",
   },
   ctaButton: {
     flexDirection: "row",
@@ -378,12 +458,17 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     gap: 8,
-    minWidth: width - 100,
+    width: "100%",
+    marginBottom: 16,
   },
   ctaButtonText: {
     color: "white",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
+  },
+  ctaSubtext: {
+    fontSize: 13,
+    textAlign: "center",
   },
 });
 

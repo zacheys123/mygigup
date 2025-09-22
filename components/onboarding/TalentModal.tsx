@@ -71,16 +71,7 @@ const TalentModal: React.FC<TalentModalProps> = ({
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        <View
-          style={[
-            styles.modalOverlay,
-            {
-              backgroundColor: isDarkMode
-                ? "rgba(0,0,0,0.8)"
-                : "rgba(0,0,0,0.6)",
-            },
-          ]}
-        >
+        <View style={styles.modalOverlay}>
           <TouchableWithoutFeedback>
             <Animated.View
               entering={FadeIn.duration(300)}
@@ -191,6 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "black", // This makes the background completely invisible
   },
   modalContent: {
     width: width - 40,

@@ -17,7 +17,7 @@ import OnboardingForm from "@/components/onboarding/onBoardingForm";
 
 const OnBoarding = () => {
   const [selectedRole, setSelectedRole] = useState<RoleType | null>(null);
-  const [selectedTalent, setSelectedTalent] = useState<TalentType>(null);
+  const [selectedTalent, setSelectedTalent] = useState<TalentType>();
   const [modalVisible, setModalVisible] = useState(false);
   const { colors } = useTheme();
 
@@ -26,7 +26,7 @@ const OnBoarding = () => {
     if (role === "musician") {
       setModalVisible(true);
     } else {
-      setSelectedTalent(null);
+      setSelectedTalent("");
     }
   };
 
@@ -115,7 +115,7 @@ const OnBoarding = () => {
             selectedTalent={selectedTalent}
             onBack={() => {
               setSelectedRole(null);
-              setSelectedTalent(null);
+              setSelectedTalent("");
             }}
           />
         )}

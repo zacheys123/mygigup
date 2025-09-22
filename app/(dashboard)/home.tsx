@@ -16,7 +16,7 @@ import { createTabsStyles } from "@/assets/styles/tabs.styles";
 import { useTheme } from "@/hooks/useTheme";
 import OnBoardingComponent from "@/components/onboarding/onBoardingComponent";
 
-const Index = () => {
+const Home = () => {
   const { user, isLoaded: isUserLoaded } = useUser();
   const router = useRouter();
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
@@ -98,4 +98,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Home;

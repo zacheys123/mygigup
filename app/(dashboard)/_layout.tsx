@@ -2,9 +2,9 @@ import { CustomUserButton } from "@/components/auth/UserProfileButton";
 import Logo from "@/components/CustomLogo";
 import { useTheme } from "@/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import React from "react";
-import { View, Image, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function TabLayout() {
   const { colors } = useTheme();
@@ -19,7 +19,7 @@ export default function TabLayout() {
           borderTopColor: colors.border,
         },
         headerStyle: {
-          backgroundColor: colors.textMuted,
+          backgroundColor: colors.surface, // Use surface color for the header
           shadowColor: colors.border,
           elevation: 0,
         },
@@ -36,6 +36,8 @@ export default function TabLayout() {
         ),
         headerRight: () => (
           <View style={styles.userButtonContainer}>
+            {/* The Home Redirect Button goes here instead of the tab bar if you want it in the header */}
+            {/* <HomeRedirectButton /> */}
             <CustomUserButton />
           </View>
         ),
@@ -43,12 +45,12 @@ export default function TabLayout() {
     >
       {/* Home/Discover Tab */}
       <Tabs.Screen
-        name="index"
+        name="home" // Ensure this name matches your file name: (tabs)/home.tsx
         options={{
-          title: "Dashboard", // This is for tab bar only now
+          title: "Dashboard",
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
-              name={focused ? "home" : "home-outline"}
+              name={focused ? "book" : "book-outline"}
               size={size}
               color={color}
             />
@@ -92,10 +94,6 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   logoContainer: {
     marginLeft: 16,
-  },
-  logo: {
-    width: 32,
-    height: 32,
   },
   userButtonContainer: {
     marginRight: 16,

@@ -1,50 +1,53 @@
 // components/Logo.tsx (Simpler version)
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useTheme } from "@/hooks/useTheme";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 
 const Logo = () => {
   const { colors, isDarkMode } = useTheme();
 
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={
-          isDarkMode
-            ? ["#667eea", "#764ba2"] // Professional blue-purple gradient
-            : ["#4facfe", "#00f2fe"] // Professional blue gradient
-        }
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradient}
-      >
-        {/* Main text with 3D effect */}
-        <Text
-          style={[
-            styles.text,
-            {
-              color: "#fff",
-              textShadowColor: "rgba(0, 0, 0, 0.3)",
-            },
-          ]}
+    <TouchableOpacity onPress={() => router.replace("/(tabs)/home")}>
+      <View style={styles.container}>
+        <LinearGradient
+          colors={
+            isDarkMode
+              ? ["#667eea", "#764ba2"] // Professional blue-purple gradient
+              : ["#4facfe", "#00f2fe"] // Professional blue gradient
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.gradient}
         >
-          GigUp
-        </Text>
+          {/* Main text with 3D effect */}
+          <Text
+            style={[
+              styles.text,
+              {
+                color: "#fff",
+                textShadowColor: "rgba(0, 0, 0, 0.3)",
+              },
+            ]}
+          >
+            GigUp
+          </Text>
 
-        {/* 3D bottom shadow */}
-        <View
-          style={[
-            styles.shadow,
-            {
-              backgroundColor: isDarkMode
-                ? "rgba(58, 65, 111, 0.6)"
-                : "rgba(55, 195, 185, 0.4)",
-            },
-          ]}
-        />
-      </LinearGradient>
-    </View>
+          {/* 3D bottom shadow */}
+          <View
+            style={[
+              styles.shadow,
+              {
+                backgroundColor: isDarkMode
+                  ? "rgba(58, 65, 111, 0.6)"
+                  : "rgba(55, 195, 185, 0.4)",
+              },
+            ]}
+          />
+        </LinearGradient>
+      </View>
+    </TouchableOpacity>
   );
 };
 

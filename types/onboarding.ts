@@ -3,7 +3,8 @@ export type TalentType =
   | "vocalist"
   | "deejay"
   | "emcee"
-  | null;
+  | ""
+  | undefined;
 export type RoleType = "musician" | "client" | "both";
 export type GigType = "regular" | "concert" | "function";
 export type ExperienceLevel =

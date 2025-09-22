@@ -1,21 +1,20 @@
-// Your React Native component file (e.g., MyScreen.js)
+// Your React Native component file
 import React from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { useUser } from "@clerk/clerk-react"; // Example: using Clerk for user info
-import { useCurrentUser } from "./useCurrentUser";
+import { useUser } from "@clerk/clerk-react";
 
 export default function MySubscriptionScreen() {
-  const { user } = useCurrentUser();
+  const { user } = useUser();
+  const userId = user?.id; // Get the user ID once
 
-  // Conditionally call the hook only when the user ID is available
-  const subscription = useQuery(
-    user?._id ? api.controllers.user.getSubscription : null,
-    user?._id ? { userId: user._id } : {}
-  );
+  // Conditionally declare the hook based on userId
+  const subscription = userId
+    ? useQuery(api.controllers.user.getSubscription, { userId })
+    : null;
 
-  // Handle different states: loading, no subscription, and data available
+  // Handle the loading state
   if (subscription === undefined) {
     return (
       <View style={styles.container}>
@@ -25,6 +24,7 @@ export default function MySubscriptionScreen() {
     );
   }
 
+  // Handle the no subscription state
   if (subscription === null) {
     return (
       <View style={styles.container}>

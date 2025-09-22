@@ -2,13 +2,9 @@ import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { ThemeProvider } from "@/hooks/useTheme";
-import {
-  Redirect,
-  Stack,
-  useRootNavigationState,
-  useSegments,
-} from "expo-router";
-import { ActivityIndicator, StatusBar, View, SafeAreaView } from "react-native";
+import { Stack, useRootNavigationState, router } from "expo-router";
+import { ActivityIndicator, StatusBar, View } from "react-native";
+import { useEffect } from "react";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
@@ -24,9 +20,9 @@ export default function RootLayout() {
     >
       <ConvexProvider client={convex}>
         <ThemeProvider>
-          <SafeAreaView style={{ flex: 1 }}>
+          <View style={{ flex: 1 }}>
             <RootLayoutNav />
-          </SafeAreaView>
+          </View>
         </ThemeProvider>
       </ConvexProvider>
     </ClerkProvider>
@@ -35,8 +31,16 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
-  const segments = useSegments();
   const rootNavigationState = useRootNavigationState();
+
+  useEffect(() => {
+    if (!isLoaded || !rootNavigationState?.key) return;
+
+    // If signed in and we're at the root, navigate to home
+    if (!isSignedIn) {
+      router.replace("/(auth)/home");
+    }
+  }, [isLoaded, isSignedIn, rootNavigationState]);
 
   if (!isLoaded || !rootNavigationState?.key) {
     return (
@@ -44,22 +48,6 @@ function RootLayoutNav() {
         <ActivityIndicator size="large" />
       </View>
     );
-  }
-
-  const inAuthGroup = segments[0] === "(auth)";
-  const currentAuthRoute = segments[1];
-  const allowedSignedInAuthRoutes = ["onBoarding"];
-  const isAllowedAuthRoute =
-    currentAuthRoute && allowedSignedInAuthRoutes.includes(currentAuthRoute);
-
-  if (isSignedIn) {
-    if (inAuthGroup && !isAllowedAuthRoute) {
-      return <Redirect href="/(dashboard)/home" />;
-    }
-  } else {
-    if (!inAuthGroup) {
-      return <Redirect href="/(auth)/home" />;
-    }
   }
 
   return (

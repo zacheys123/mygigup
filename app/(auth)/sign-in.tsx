@@ -8,12 +8,12 @@ import {
   Text,
   StyleSheet,
   Image,
-  SafeAreaView,
   Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const useWarmUpBrowser = () => {
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function SignInPage() {
               console.log(session?.currentTask);
               return;
             }
-            router.push("/(tabs)");
+            router.push("/(tabs)/home");
           },
         });
       }

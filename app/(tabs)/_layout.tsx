@@ -1,113 +1,69 @@
-import { router, Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+// app/(tabs)/_layout.tsx
+import { Stack } from "expo-router";
+import { CustomTabBar } from "@/components/CustomTabBar";
+import { View } from "react-native";
 import { useTheme } from "@/hooks/useTheme";
 import { CustomUserButton } from "@/components/auth/UserProfileButton";
 import Logo from "@/components/CustomLogo";
-import { Pressable } from "react-native";
+
+const mainTabs = [
+  {
+    name: "home",
+    href: "/", // Changed to root since home is index
+    icon: "compass-outline",
+    activeIcon: "compass",
+    label: "Discover",
+  },
+  {
+    name: "messages",
+    href: "/messages", // Simplified path
+    icon: "chatbubbles-outline",
+    activeIcon: "chatbubbles",
+    label: "Messages",
+  },
+  {
+    name: "dashboard-nav",
+    href: "/(dashboard)/home", // Updated path for dashboard
+    icon: "document-outline",
+    activeIcon: "document",
+    label: "Dashboard",
+  },
+  {
+    name: "profile",
+    href: "/profile", // Simplified path
+    icon: "person-outline",
+    activeIcon: "person",
+    label: "Profile",
+  },
+];
 
 export default function TabsLayout() {
   const { colors } = useTheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: true, // Enable headers to show the button
-        tabBarStyle: {
-          backgroundColor: colors.border,
-          borderTopColor: colors.border,
-        },
-        headerTitle: () => null,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "500",
-        },
-        headerRight: () => <CustomUserButton />, // Fixed: return the component
+    <View style={{ flex: 1, backgroundColor: colors.backgrounds.card }}>
+      <Stack
+        screenOptions={{
+          headerShown: true,
+          headerTitle: () => null,
+          headerRight: () => <CustomUserButton />,
+          headerLeft: () => <Logo />,
+          headerTintColor: colors.text,
+          headerStyle: {
+            backgroundColor: colors.surface,
+          },
+          contentStyle: {
+            backgroundColor: colors.backgrounds.card,
+          },
+        }}
+      >
+        <Stack.Screen name="index" options={{ title: "Discover" }} />{" "}
+        {/* Changed from "home" to "index" */}
+        <Stack.Screen name="messages" options={{ title: "Messages" }} />
+        <Stack.Screen name="profile" options={{ title: "Profile" }} />
+      </Stack>
 
-        headerLeft: () => <Logo />, // Fixed: return the component
-        headerStyle: {
-          backgroundColor: colors.border,
-        },
-        headerTitleStyle: {
-          color: colors.text,
-        },
-      }}
-    >
-      {/* Discover Tab */}
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: "Discover",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "compass" : "compass-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      {/* Messages Tab */}
-      <Tabs.Screen
-        name="messages"
-        options={{
-          title: "Messages",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "chatbubbles" : "chatbubbles-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      {/* Notifications Tab */}
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          title: "Alerts",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "notifications" : "notifications-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      {/* Profile Tab */}
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "person" : "person-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="dashboard-nav"
-        options={{
-          title: "Dashboard",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Pressable onPress={() => router.push("/(dashboard)/home")}>
-              <Ionicons
-                name={focused ? "document" : "document-outline"}
-                size={size}
-                color={color}
-              />
-            </Pressable>
-          ),
-        }}
-      />
-    </Tabs>
+      <CustomTabBar tabs={mainTabs} />
+    </View>
   );
 }

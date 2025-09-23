@@ -11,7 +11,8 @@ export const darkColors: ColorScheme = {
   warning: "#fbbf24",
   danger: "#f87171",
   shadow: "#00000060",
-  accent: "#50500bff", // Darker shadow for dark mode
+  textTertiary: "#e5eaf3ff", // Medium gray for secondary text
+  accent: "#777764ff", // Darker shadow for dark mode
   gradients: {
     background: ["#0f172a", "#1e293b", "#334155"], // Enhanced with 3 colors
     surface: ["#1e293b", "#334155", "#475569"], // Enhanced with 3 colors
@@ -35,7 +36,8 @@ export const darkColors: ColorScheme = {
   backgrounds: {
     input: "#1e293b",
     editInput: "#0f172a",
-    card: "#1e293b",
+    elevated: "#110e0eff", // Card backgrounds
+    card: "#090c0fff", // Slightly different for contrast
     modal: "#1e293b",
   },
   statusBarStyle: "light-content",

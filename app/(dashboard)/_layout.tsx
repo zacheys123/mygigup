@@ -1,101 +1,69 @@
+// app/(dashboard)/_layout.tsx
+import { Stack } from "expo-router";
+import { CustomTabBar } from "@/components/CustomTabBar";
+import { View, StatusBar } from "react-native";
+import { useTheme } from "@/hooks/useTheme";
 import { CustomUserButton } from "@/components/auth/UserProfileButton";
 import Logo from "@/components/CustomLogo";
-import { useTheme } from "@/hooks/useTheme";
-import { Ionicons } from "@expo/vector-icons";
-import { router, Tabs } from "expo-router";
-import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function TabLayout() {
-  const { colors } = useTheme();
+const dashboardTabs = [
+  {
+    name: "home",
+    href: "/(dashboard)/home",
+    icon: "grid-outline",
+    label: "Overview",
+  },
+  {
+    name: "plan",
+    href: "/(dashboard)/plan",
+    icon: "card-outline",
+    label: "Plans",
+  },
+  {
+    name: "analytics",
+    href: "/(dashboard)/analytics",
+    icon: "stats-chart-outline",
+    label: "Analytics",
+  },
+  {
+    name: "profile",
+    href: "/(dashboard)/profile",
+    icon: "person-outline",
+    label: "Profile",
+  },
+];
+
+export default function DashboardLayout() {
+  const { colors, isDarkMode } = useTheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderTopColor: colors.border,
-        },
-        headerStyle: {
-          backgroundColor: colors.surface, // Use surface color for the header
-          shadowColor: colors.border,
-          elevation: 0,
-        },
-        headerTintColor: colors.text,
-        headerTitleStyle: {
-          fontWeight: "600",
-        },
-        headerTitle: () => null, // This removes the title completely
-        headerTitleAlign: "center",
-        headerLeft: () => (
-          <View style={styles.logoContainer}>
-            <Logo />
-          </View>
-        ),
-        headerRight: () => (
-          <View style={styles.userButtonContainer}>
-            {/* The Home Redirect Button goes here instead of the tab bar if you want it in the header */}
-            {/* <HomeRedirectButton /> */}
-            <CustomUserButton />
-          </View>
-        ),
-      }}
-    >
-      {/* Home/Discover Tab */}
-      <Tabs.Screen
-        name="home" // Ensure this name matches your file name: (tabs)/home.tsx
-        options={{
-          title: "Dashboard",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "book" : "book-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
+    <View style={{ flex: 1, backgroundColor: colors.backgrounds.card }}>
+      {/* StatusBar for dashboard group */}
+      <StatusBar
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
+        backgroundColor={colors.backgrounds.card}
       />
+      <Stack
+        screenOptions={{
+          headerShown: true,
+          headerTitle: () => null,
+          headerRight: () => <CustomUserButton />,
+          headerLeft: () => <Logo />,
+          headerStyle: {
+            backgroundColor: colors.surface,
+          },
+          headerTintColor: colors.text,
+          contentStyle: {
+            backgroundColor: colors.backgrounds.card,
+          },
+        }}
+      >
+        <Stack.Screen name="home" options={{ title: "Dashboard" }} />
+        <Stack.Screen name="plan" options={{ title: "Plan" }} />
+        <Stack.Screen name="analytics" options={{ title: "Analytics" }} />
+      </Stack>
 
-      {/* Billing Tab */}
-      <Tabs.Screen
-        name="billing"
-        options={{
-          title: "Billing",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "cash" : "cash-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      {/* Profile Tab */}
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "person" : "person-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-    </Tabs>
+      <CustomTabBar tabs={dashboardTabs} />
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  logoContainer: {
-    marginLeft: 16,
-  },
-  userButtonContainer: {
-    marginRight: 16,
-  },
-});

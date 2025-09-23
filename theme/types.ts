@@ -12,6 +12,7 @@ export interface ColorScheme {
   danger: string;
   shadow: string;
   accent: string;
+  textTertiary: string; // Medium gray for secondary text
   gradients: {
     background: [string, string, string];
     surface: [string, string, string];
@@ -34,6 +35,7 @@ export interface ColorScheme {
     input: string;
     editInput: string;
     card: string;
+    elevated: string;
     modal: string;
   };
   statusBarStyle: StatusBarStyle;

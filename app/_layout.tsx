@@ -1,7 +1,8 @@
+// app/_layout.tsx
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
-import { ThemeProvider } from "@/hooks/useTheme";
+import { ThemeProvider, useTheme } from "@/hooks/useTheme";
 import {
   Stack,
   useRootNavigationState,
@@ -9,7 +10,6 @@ import {
   router,
 } from "expo-router";
 import { ActivityIndicator, StatusBar, View } from "react-native";
-
 import { useEffect } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,6 +20,19 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
+// StatusBar component that uses theme
+function ThemedStatusBar() {
+  const { colors, isDarkMode } = useTheme();
+
+  return (
+    <StatusBar
+      barStyle={isDarkMode ? "light-content" : "dark-content"}
+      backgroundColor={colors.backgrounds.card}
+      translucent={false}
+    />
+  );
+}
+
 export default function RootLayout() {
   return (
     <ClerkProvider
@@ -28,9 +41,10 @@ export default function RootLayout() {
     >
       <ConvexProvider client={convex}>
         <ThemeProvider>
-          <View style={{ flex: 1 }}>
+          <SafeAreaView style={{ flex: 1 }}>
+            <ThemedStatusBar />
             <RootLayoutNav />
-          </View>
+          </SafeAreaView>
         </ThemeProvider>
       </ConvexProvider>
     </ClerkProvider>
@@ -39,6 +53,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoaded: isAuthLoaded, isSignedIn } = useAuth();
+  const { colors } = useTheme();
   const {
     user: currentUser,
     isLoading: isUserLoading,
@@ -48,40 +63,32 @@ function RootLayoutNav() {
   const rootNavigationState = useRootNavigationState();
 
   useEffect(() => {
-    if (!rootNavigationState?.key) return;
+    if (!rootNavigationState?.key || !isAuthLoaded) return;
 
     const inAuthGroup = segments[0] === "(auth)";
-    const inOnboarding = segments[1] === "onBoarding";
-    const inDashboardGroup = segments[0] === "(dashboard)";
+    const inOnboarding =
+      segments[0] === "(auth)" && segments[1] === "onBoarding";
+    const inProtectedGroup =
+      segments[0] === "(tabs)" ||
+      segments[0] === "(dashboard)" ||
+      segments[0] === "(main_app)";
 
-    // User is not signed in - redirect to auth
-    if (!isSignedIn && !inAuthGroup) {
-      router.replace("/(auth)/home");
+    if (!isSignedIn) {
+      if (inProtectedGroup) {
+        router.replace("/(auth)/home");
+      }
       return;
     }
 
-    // User is signed in
-    if (isSignedIn) {
-      // Still loading user data - wait
-      if (isUserLoading) return;
+    if (isUserLoading) return;
 
-      // User doesn't exist in Convex database
-      if (!hasConvexUser) {
-        // If not already on onboarding, redirect there
-        if (!inOnboarding) {
-          router.replace("/(auth)/onBoarding");
-        }
-        return; // This return is fine - it exits the function
+    if (!hasConvexUser) {
+      if (!inOnboarding) {
+        router.replace("/(auth)/onBoarding");
       }
-
-      // User exists in Convex database (this code is reachable now)
-      // If user is in auth group (but not onboarding), redirect to dashboard
+    } else {
       if (inAuthGroup && !inOnboarding) {
-        router.replace("/(dashboard)/home");
-      }
-      // If user is not in any protected group, redirect to dashboard
-      else if (!inAuthGroup && !inDashboardGroup) {
-        router.replace("/(dashboard)/home");
+        router.replace("/(tabs)/home");
       }
     }
   }, [
@@ -89,26 +96,27 @@ function RootLayoutNav() {
     isSignedIn,
     segments,
     rootNavigationState,
-    currentUser,
     hasConvexUser,
     isUserLoading,
   ]);
 
-  // Loading states
   const showLoading =
     !isAuthLoaded || !rootNavigationState?.key || (isSignedIn && isUserLoading);
 
   if (showLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.backgrounds.card,
+        }}
+      >
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <StatusBar />
-    </Stack>
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 }

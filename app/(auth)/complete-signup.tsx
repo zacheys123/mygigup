@@ -66,7 +66,7 @@ export default function CompleteProfileScreen() {
           // Finalize the sign-up process
           if (signUp.status === "complete") {
             await setActive({ session: signUp.createdSessionId });
-            router.push("/(dashboard)/home");
+            router.push("/(tabs)/home");
           }
         }
       } else {

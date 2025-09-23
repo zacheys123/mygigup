@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Modal, View, Text, TouchableOpacity } from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/hooks/useTheme";
@@ -12,27 +12,29 @@ export function CustomUserButton() {
   const { colors, isDarkMode, toggleDarkMode } = useTheme();
 
   const headerStyles = createHeaderStyles(colors);
+
   if (!isSignedIn) {
     return null;
   }
 
+  // Return a single View wrapper instead of multiple elements
   return (
-    <>
-      <View style={headerStyles.rightSection}>
-        <TouchableOpacity
-          onPress={toggleDarkMode}
-          style={headerStyles.themeToggle}
-        >
-          <Ionicons
-            name={isDarkMode ? "sunny" : "moon"}
-            size={20}
-            color={colors.text}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <Ionicons name="person-circle" size={32} color={colors.warning} />
-        </TouchableOpacity>
-      </View>
+    <View style={headerStyles.rightSection}>
+      <TouchableOpacity
+        onPress={toggleDarkMode}
+        style={headerStyles.themeToggle}
+      >
+        <Ionicons
+          name={isDarkMode ? "sunny" : "moon"}
+          size={20}
+          color={colors.text}
+        />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Ionicons name="person-circle" size={32} color={colors.warning} />
+      </TouchableOpacity>
+
       <Modal
         visible={modalVisible}
         transparent={true}
@@ -71,6 +73,6 @@ export function CustomUserButton() {
           </View>
         </View>
       </Modal>
-    </>
+    </View>
   );
 }

@@ -352,17 +352,50 @@ export const getUserByUsername = query({
   },
 });
 
+// convex/subscriptions.ts
 export const getSubscription = query({
-  args: { userId: v.string() }, // Accepts a plain string from the client
+  args: { userId: v.string() },
   handler: async (ctx, args) => {
-    // Cast the string to the correct Id type
     const typedUserId = args.userId as Id<"users">;
 
-    // Now you can use the typedUserId in your query
-    return await ctx.db
+    const subscription = await ctx.db
       .query("subscriptions")
       .withIndex("by_userId", (q) => q.eq("userId", typedUserId))
       .first();
+
+    // Just return the subscription (or null if not found)
+    // Don't create it here since this is a query function
+    return subscription;
+  },
+});
+export const initializeSubscription = mutation({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const typedUserId = args.userId as Id<"users">;
+
+    // Check if subscription already exists
+    const existingSubscription = await ctx.db
+      .query("subscriptions")
+      .withIndex("by_userId", (q) => q.eq("userId", typedUserId))
+      .first();
+
+    if (existingSubscription) {
+      return existingSubscription;
+    }
+
+    // Create free subscription
+    const subscriptionId = await ctx.db.insert("subscriptions", {
+      id: `sub_${Date.now()}`,
+      planId: "free_plan",
+      userId: typedUserId,
+      status: "active",
+      startDate: Date.now(),
+      nextBillingDate: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      autoRenew: true,
+      tier: "free",
+    });
+
+    return await ctx.db.get(subscriptionId);
   },
 });
 export const updateTier = mutation({

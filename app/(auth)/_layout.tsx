@@ -4,11 +4,15 @@ import { useTheme } from "@/hooks/useTheme";
 import { StatusBar } from "react-native";
 
 export default function AuthLayout() {
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <StatusBar barStyle={colors.statusBarStyle} />
+      <StatusBar
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
+        backgroundColor={colors.backgrounds.card}
+        translucent={false}
+      />
       <Stack.Screen
         name="sign-in"
         options={{

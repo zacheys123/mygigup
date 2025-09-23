@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { createTabsStyles } from "@/assets/styles/tabs.styles";
 import { useTheme } from "@/hooks/useTheme";
 import OnBoardingComponent from "@/components/onboarding/onBoardingComponent";
+import DashboardHome from "@/components/dashboard/LandingPage";
 
 const Home = () => {
   const { user, isLoaded: isUserLoaded } = useUser();
@@ -72,7 +73,7 @@ const Home = () => {
   };
 
   // If onboarding is not complete, show the onboarding modal
-  if (!isOnboardingComplete) {
+  if (!isOnboardingComplete && myUser?.firstLogin === true) {
     return (
       <OnBoardingComponent
         showOnboardingModal={showOnboardingModal}
@@ -85,15 +86,7 @@ const Home = () => {
   // Only show app content if onboarding is complete
   return (
     <View style={styles.container}>
-      {mySubscription?.tier !== "free" && (
-        <Text style={styles.welcomeText}>
-          Welcome to the app, {user?.firstName}!
-        </Text>
-      )}
-      {/* Your main app content here */}
-      <View style={styles.content}>
-        <Text style={styles.contentText}>Your app content goes here...</Text>
-      </View>
+      <DashboardHome />
     </View>
   );
 };

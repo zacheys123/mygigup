@@ -1,53 +1,71 @@
-import { View, Text } from "react-native";
-import React from "react";
+// app/(settings)/_layout.tsx
+import { Stack } from "expo-router";
+import { CustomTabBar } from "@/components/CustomTabBar";
+import { View } from "react-native";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { Stack, Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@/hooks/useTheme";
 
-const MainAppLayout = () => {
-  const { user, isLoading } = useCurrentUser(); // Get isLoading state
-  const { colors } = useTheme();
-  console.log("Current user:", user);
+export default function MainAppLayout() {
+  const { user } = useCurrentUser();
+  const mainTabs = user?.isClient
+    ? [
+        {
+          name: "create",
+          href: "/(main_app)/client/create",
+          icon: "person-outline",
+          label: "Create",
+        },
+        {
+          name: "mygigs",
+          href: "/(main_app)/client/mygigs",
+          icon: "lock-closed-outline",
+          label: "MyGigs",
+        },
+      ]
+    : user?.isMusician
+      ? [
+          {
+            name: "allgigs",
+            href: "/(main_app)/musician/allgigs",
+            icon: "person-outline",
+            label: "All Gigs",
+          },
+          {
+            name: "pending",
+            href: "/(main_app)/musician/pending",
+            icon: "lock-closed-outline",
+            label: "Pending",
+          },
+        ]
+      : [
+          {
+            name: "create",
+            href: "/(main_app)/dual/create",
+            icon: "person-outline",
+            label: "Account",
+          },
+          {
+            name: "mygiigs",
+            href: "/(main_app)/dual/mygigs",
+            icon: "lock-closed-outline",
+            label: "Privacy",
+          },
+        ];
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderColor: colors.border,
-          paddingBottom: 2,
-          paddingTop: 5,
-          height: 80,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "600",
-        },
-        headerShown: false,
-      }}
-    >
-      <Tabs.Screen
-        name="client/create"
-        options={{
-          title: "Todos",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="flash-outline" size={size} color={color} />
-          ),
+    <View style={{ flex: 1 }}>
+      <Stack
+        screenOptions={{
+          headerShown: true,
         }}
-      />
-      <Tabs.Screen
-        name="setting"
-        options={{
-          title: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
-  );
-};
+      >
+        <Stack.Screen name="account" options={{ title: "Account Settings" }} />
+        <Stack.Screen name="privacy" options={{ title: "Privacy" }} />
+        <Stack.Screen
+          name="notifications"
+          options={{ title: "Notifications" }}
+        />
+      </Stack>
 
-export default MainAppLayout;
+      <CustomTabBar tabs={mainTabs} />
+    </View>
+  );
+}

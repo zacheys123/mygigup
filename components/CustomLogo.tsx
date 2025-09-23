@@ -1,97 +1,43 @@
-// components/Logo.tsx (Simpler version)
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+// components/CustomLogo.tsx
+import { View, Text, StyleSheet } from "react-native";
 import { useTheme } from "@/hooks/useTheme";
-import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
-const Logo = () => {
-  const { colors, isDarkMode } = useTheme();
+export default function Logo() {
+  const { colors } = useTheme();
 
   return (
-    <TouchableOpacity onPress={() => router.replace("/(tabs)/home")}>
-      <View style={styles.container}>
-        <LinearGradient
-          colors={
-            isDarkMode
-              ? ["#667eea", "#764ba2"] // Professional blue-purple gradient
-              : ["#4facfe", "#00f2fe"] // Professional blue gradient
-          }
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
-          {/* Main text with 3D effect */}
-          <Text
-            style={[
-              styles.text,
-              {
-                color: "#fff",
-                textShadowColor: "rgba(0, 0, 0, 0.3)",
-              },
-            ]}
-          >
-            GigUp
-          </Text>
-
-          {/* 3D bottom shadow */}
-          <View
-            style={[
-              styles.shadow,
-              {
-                backgroundColor: isDarkMode
-                  ? "rgba(58, 65, 111, 0.6)"
-                  : "rgba(55, 195, 185, 0.4)",
-              },
-            ]}
-          />
-        </LinearGradient>
+    <View style={styles.container}>
+      <View
+        style={[
+          styles.iconContainer,
+          { backgroundColor: colors.primary + "20" },
+        ]}
+      >
+        <Ionicons name="mic" size={20} color={colors.primary} />
       </View>
-    </TouchableOpacity>
+      <Text style={[styles.text, { color: colors.text }]}>GigUp</Text>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
+    marginLeft: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
-  gradient: {
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderRadius: 16,
-    minWidth: 90,
+  iconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    position: "relative",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
   },
   text: {
-    fontSize: 14,
-    fontWeight: "900",
-    letterSpacing: 1.5,
-    textTransform: "uppercase",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-    position: "relative",
-    zIndex: 2,
-  },
-  shadow: {
-    position: "absolute",
-    bottom: -2,
-    left: 8,
-    right: 8,
-    height: 5,
-    borderRadius: 8,
-    zIndex: 1,
-    transform: [{ skewX: "-10deg" }],
+    fontSize: 20,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
 });
-
-export default Logo;

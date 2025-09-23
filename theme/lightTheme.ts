@@ -12,6 +12,7 @@ export const lightColors: ColorScheme = {
   danger: "#ef4444",
   shadow: "#00000020", // Added transparency
   accent: "#e0e102",
+  textTertiary: "#6B7280", // Medium gray for secondary text
   gradients: {
     background: ["#f8fafc", "#e2e8f0", "#e1f7f0"],
     surface: ["#ffffff", "#f8fafc", "#f8fefd"],
@@ -35,7 +36,8 @@ export const lightColors: ColorScheme = {
   backgrounds: {
     input: "#ffffff",
     editInput: "#f1f5f9",
-    card: "#ffffff",
+    elevated: "#FFFFFF", // Card backgrounds
+    card: "#F9FAFB", // Slightly different for contrast
     modal: "#ffffff",
   },
   statusBarStyle: "dark-content",
